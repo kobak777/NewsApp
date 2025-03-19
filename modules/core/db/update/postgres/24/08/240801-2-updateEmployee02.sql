@@ -1,2 +1,0 @@
-alter table NEWSAPP_EMPLOYEE add constraint FK_NEWSAPP_EMPLOYEE_ON_USER foreign key (USER_ID) references SEC_USER(ID);
-create index IDX_NEWSAPP_EMPLOYEE_ON_USER on NEWSAPP_EMPLOYEE (USER_ID);

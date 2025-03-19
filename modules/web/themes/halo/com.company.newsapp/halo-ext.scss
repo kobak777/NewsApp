@@ -1,0 +1,30 @@
+/* Define your theme modifications inside next mixin */
+@mixin com_company_newsapp-halo-ext {
+
+    .c-sidemenu-layout.v-csslayout .c-sidemenu-title .c-app-icon {
+        height: 80px;
+        width: 40px;
+    }
+
+
+    .c-sidemenu-layout.v-csslayout .c-sidemenu-title {
+        height: 50px;
+    }
+    .news-content-column {
+        white-space: normal !important;
+        word-wrap: break-word;
+        max-width: 300px;
+    }
+
+    .news-table-information {
+        white-space: normal !important;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        max-width: 300px;
+    }
+    .news-content-label {
+        white-space: normal !important;
+        word-wrap: break-word;
+        max-width: 300px;
+    }
+}

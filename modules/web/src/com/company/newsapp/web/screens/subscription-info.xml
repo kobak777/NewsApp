@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://subscriptionView.caption"
+        messagesPack="com.company.newsapp.web.screens">
+    <data>
+        <instance id="newsCategoryDc" class="com.company.newsapp.entity.NewsCategory">
+            <view extends="_local">
+                <property name="author" view="_minimal">
+                    <property name="email"/>
+                    <property name="phone"/>
+                </property>
+                <property name="subscribers" view="_minimal">
+                    <property name="docname"/>
+                    <property name="phone"/>
+                </property>
+            </view>
+            <loader id="newsCategoriesDl">
+                <query>
+                    <![CDATA[select e from newsapp_NewsCategory e]]>
+                </query>
+            </loader>
+        </instance>
+        <collection id="subscribersDc" class="com.company.newsapp.entity.Employee">
+            <view extends="_minimal">
+                <property name="docname"/>
+                <property name="phone"/>
+            </view>
+            <loader id="subscribersDl">
+                <query>
+                    <![CDATA[select e from newsapp_Employee e join e.subscribedCategories c where c.id = :newsCategoryId]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600" width="800"/>
+    <layout>
+        <tabSheet id="tabs" width="100%">
+            <tab id="infoTab" caption="Информация">
+                <form id="form" dataContainer="newsCategoryDc" width="100%">
+                    <column width="350px">
+                        <textField id="nameField" property="name" editable="false"/>
+                        <textField id="authorField" property="author" editable="false"/>
+                        <textArea id="descriptionField" property="description" editable="false"/>
+                        <dateField id="regDateField" property="regDate" editable="false"/>
+                        <dateField id="closeDateField" property="closeDate" editable="false"/>
+                        <textField id="supportPhoneField" property="author.phone" editable="false"/>
+                        <textField id="supportMailField" property="author.email" editable="false"/>
+                    </column>
+                </form>
+            </tab>
+            <tab id="subscribersTab" caption="Подписчики">
+                <table id="subscribersTable" dataContainer="subscribersDc" width="100%" height="300px" emptyStateMessage="Нет записей">
+                    <columns>
+                        <column id="docname" caption="ФИО"/>
+                        <column id="phone" caption="Рабочий телефон"/>
+                    </columns>
+                </table>
+            </tab>
+        </tabSheet>
+    </layout>
+</window>

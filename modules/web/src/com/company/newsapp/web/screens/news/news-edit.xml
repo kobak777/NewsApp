@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://newsEdit.caption"
+        focusComponent="form"
+        messagesPack="com.company.newsapp.web.screens.news">
+    <data>
+        <instance id="newsDc"
+                  class="com.company.newsapp.entity.News">
+            <view extends="_local">
+                <property name="author" view="_minimal">
+                    <property name="email"/>
+                    <property name="phone"/>
+                </property>
+                <property name="category" view="_minimal"/>
+            </view>
+            <loader/>
+        </instance>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="newsDc">
+            <column width="350px">
+                
+                <textField id="titleField" property="title"/>
+                <resizableTextArea id="informationField" property="information"/>
+                <dateField id="dateField" property="date"/>
+                <pickerField id="authorField" property="author">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <pickerField id="categoryField" property="category">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>

@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        xmlns:c="http://schemas.haulmont.com/cuba/screen/jpql_condition.xsd"
+        caption="msg://newsCategoryBrowse.caption"
+        focusComponent="newsCategoriesTable"
+        messagesPack="com.company.newsapp.web.screens.newscategory">
+    <data readOnly="true">
+        <collection id="newsCategoriesDc"
+                    class="com.company.newsapp.entity.NewsCategory">
+            <view extends="_local">
+                <property name="author" view="_minimal">
+                    <property name="email"/>
+                    <property name="phone"/>
+                </property>
+            </view>
+            <loader id="newsCategoriesDl">
+                <query>
+                    <![CDATA[select e from newsapp_NewsCategory e]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="newsCategoriesTable"
+            spacing="true">
+        <filter id="filter"
+                applyTo="newsCategoriesTable"
+                dataLoader="newsCategoriesDl">
+            <properties include=".*"/>
+        </filter>
+        <groupTable id="newsCategoriesTable"
+                    width="100%"
+                    dataContainer="newsCategoriesDc">
+            <actions>
+                <action id="create" type="create"/>
+                <action id="edit" type="edit"/>
+                <action id="remove" type="remove"/>
+            </actions>
+            <columns>
+                <column id="name"/>
+                <column id="author"/>
+                <column id="description"/>
+                <column id="regDate"/>
+                <column id="closeDate"/>
+                <column id="author.phone"/>
+                <column id="author.email"/>
+            </columns>
+            <rowsCount/>
+            <buttonsPanel id="buttonsPanel"
+                          alwaysVisible="true">
+                <button id="createBtn" action="newsCategoriesTable.create"/>
+                <button id="editBtn" action="newsCategoriesTable.edit"/>
+                <button id="removeBtn" action="newsCategoriesTable.remove"/>
+                <button id="infoBtn" caption="Посмотреть информацию" icon="EYE"/>
+            </buttonsPanel>
+        </groupTable>
+        <hbox id="lookupActions" spacing="true" visible="false">
+            <button action="lookupSelectAction"/>
+            <button action="lookupCancelAction"/>
+        </hbox>
+    </layout>
+</window>

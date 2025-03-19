@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<menu-config xmlns="http://schemas.haulmont.com/cuba/menu.xsd">
+    <menu id="application-newsapp" insertBefore="administration" caption="mainMsg://menu_config.application-newsapp">
+        <item screen="newsapp_Employee.browse" caption="mainMsg://menu_config.newsapp_Employee.browse"/>
+        <item screen="newsapp_News.browse" caption="mainMsg://menu_config.newsapp_News.browse"/>
+        <item screen="newsapp_NewsCategory.browse" caption="mainMsg://menu_config.newsapp_NewsCategory.browse"/>
+        <item screen="newsapp_Profile" caption="mainMsg://menu_config.newsapp_Profile"/>
+    </menu>
+
+</menu-config>

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://profile.caption"
+        messagesPack="com.company.newsapp.web.screens">
+    <data>
+        <instance id="employeeDc" class="com.company.newsapp.entity.Employee">
+            <view extends="_local"/>
+            <loader id="employeeDl">
+                <query>
+                    <![CDATA[select e from newsapp_Employee e where e.user.id = :session$userId]]>
+                </query>
+            </loader>
+        </instance>
+        <collection id="newsDc" class="com.company.newsapp.entity.News">
+            <view extends="_local">
+                <property name="author" view="_minimal"/>
+                <property name="category" view="_minimal"/>
+            </view>
+            <loader id="newsDl">
+                <query>
+                    <![CDATA[
+                        SELECT n FROM newsapp_News n
+                        WHERE n.category IN (
+                            SELECT c FROM newsapp_NewsCategory c
+                            JOIN c.subscribers s
+                            WHERE s.user.id = :session$userId
+                        )
+                        ORDER BY n.date DESC
+                    ]]>
+                </query>
+            </loader>
+
+        </collection>
+        <collection id="newsCategoriesDc" class="com.company.newsapp.entity.NewsCategory">
+            <view extends="_local" systemProperties="true">
+                <property name="author" view="_minimal">
+                    <property name="email"/>
+                    <property name="phone"/>
+                    <property name="user"/>
+                </property>
+                <property name="subscribers" view="_minimal">
+                    <property name="name"/>
+                    <property name="lastname"/>
+                    <property name="user"/>
+                    <property name="displayname"/>
+                </property>
+            </view>
+            <loader id="newsCategoriesDl">
+                <query>
+                    <![CDATA[select e from newsapp_NewsCategory e]]>
+                </query>
+            </loader>
+        </collection>
+        <collection id="subscribersDc" class="com.company.newsapp.entity.Employee">
+            <view extends="_minimal">
+                <property name="displayname"/>
+            </view>
+            <loader id="subscribersDl">
+                <query>
+                    <![CDATA[select e from newsapp_Employee e join e.subscribedCategories c where c.id = :categoryId]]>
+                </query>
+            </loader>
+        </collection>
+    </data>
+    <layout>
+        <tabSheet id="contactProperties" width="100%" stylename="framed">
+            <tab id="info" caption="Сведения" margin="true" expand="propertyFields">
+                <vbox id="propertyFields" margin="true" spacing="false" width="500px">
+                    <label stylename="colored h2" value="Основные"/>
+                    <form id="form" dataContainer="employeeDc" width="100%">
+                        <column width="600">
+                            <textField id="lastnameField" property="lastname"/>
+                            <textField id="nameField" property="name"/>
+                            <textField id="patronymicField" property="patronymic"/>
+                            <textField id="docnameField" property="docname"/>
+                            <textField id="displaynameField" property="displayname"/>
+                            <textField id="emailField" property="email"/>
+                            <maskedField id="phoneField" property="phone" mask="###-##-##"/>
+                        </column>
+                    </form>
+                    <button id="saveBtn" caption="Сохранить" icon="SAVE" stylename="primary"/>
+                </vbox>
+            </tab>
+            <tab id="category" caption="Подписки" margin="true" spacing="true">
+                    <groupBox id="g1" caption="Категории" height="100%" outerMargin="true, false, true, false">
+                        <table id="newsCategoriesTable" dataContainer="newsCategoriesDc" width="100%" height="300">
+                            <actions>
+                                <action id="create" type="create"/>
+                                <action id="edit" type="edit"/>
+                                <action id="remove" type="remove"/>
+                            </actions>
+                            <buttonsPanel id="buttonsPanel" alwaysVisible="true">
+                                <button id="createBtn" action="newsCategoriesTable.create"/>
+                                <button id="editBtn" action="newsCategoriesTable.edit"/>
+                                <button id="removeBtn" action="newsCategoriesTable.remove"/>
+                                <button id="subscribe" caption="Подписаться" icon="PLUS"/>
+                                <button id="describe" caption="Отписаться" icon="MINUS"/>
+                            </buttonsPanel>
+                            <columns>
+                                <column id="subscriptionStatus" caption="Статус подписки"/>
+                                <column id="name"/>
+                                <column id="author"/>
+                                <column id="description"/>
+                                <column id="regDate"/>
+                                <column id="closeDate"/>
+                                <column id="author.email"/>
+                                <column id="author.phone"/>
+                            </columns>
+                        </table>
+                    </groupBox>
+
+
+            </tab>
+            <tab id="news" caption="Новости" margin="true">
+                <groupBox id="newsGroupBox" caption="Новости по подпискам" width="100%" height="100%" outerMargin="true, false, true, false">
+                    <vbox width="100%">
+                        <table id="newsTable" dataContainer="newsDc" width="100%" height="300">
+                            <columns>
+                                <column id="title" caption="Заголовок"/>
+                                <column id="category" caption="Категория"/>
+                                <column id="information" caption="Содержание"/>
+                                <column id="date" caption="Дата публикации"/>
+                                <column id="author" caption="Автор"/>
+                            </columns>
+                        </table>
+                    </vbox>
+                </groupBox>
+            </tab>
+
+        </tabSheet>
+    </layout>
+</window>

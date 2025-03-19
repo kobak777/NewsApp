@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<window xmlns="http://schemas.haulmont.com/cuba/screen/window.xsd"
+        caption="msg://newsCategoryEdit.caption"
+        focusComponent="form"
+        messagesPack="com.company.newsapp.web.screens.newscategory">
+    <data>
+        <instance id="newsCategoryDc"
+                  class="com.company.newsapp.entity.NewsCategory">
+            <view extends="_local">
+                <property name="author" view="_local">
+                    <property name="email"/>
+                    <property name="phone"/>
+                </property>
+            </view>
+            <loader/>
+        </instance>
+        <collection id="employee" class="com.company.newsapp.entity.Employee">
+            <view extends="_local">
+                <property name="email"/>
+                <property name="phone"/>
+            </view>
+        </collection>
+    </data>
+    <dialogMode height="600"
+                width="800"/>
+    <layout expand="editActions" spacing="true">
+        <form id="form" dataContainer="newsCategoryDc">
+            <column width="350px">
+                <textField id="nameField" property="name"/>
+                <pickerField id="authorField" property="author">
+                    <actions>
+                        <action id="lookup" type="picker_lookup"/>
+                        <action id="clear" type="picker_clear"/>
+                    </actions>
+                </pickerField>
+                <resizableTextArea id="descriptionField" property="description"/>
+                <dateField id="regDateField" property="regDate"/>
+                <dateField id="closeDateField" property="closeDate"/>
+                <maskedField id="supportPhoneField" property="author.phone" mask="###-##-##"/>
+                <textField id="supportMailField" property="author.email"/>
+
+            </column>
+        </form>
+        <hbox id="editActions" spacing="true">
+            <button id="commitAndCloseBtn" action="windowCommitAndClose"/>
+            <button id="closeBtn" action="windowClose"/>
+        </hbox>
+    </layout>
+</window>
