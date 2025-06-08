@@ -38,32 +38,16 @@ public class NewsBrowse extends StandardLookup<News> {
         newsTable.addGeneratedColumn("information", entity -> {
             Label<String> label = uiComponents.create(Label.TYPE_STRING);
             label.setValue(entity.getInformation());
-            label.setStyleName("news-table-information"); // Применение стиля
-            label.setWidth("300px"); // Ограничение ширины
+            label.setStyleName("news-table-information");
+            label.setWidth("300px");
             return label;
         });
     }
 
     @Subscribe
     public void onBeforeShow(BeforeShowEvent event) {
-        //assignSequentialNumbers(); // Присваиваем номера перед отображением
-        sortNewsByDescendingOrder(); // Сортируем по убыванию номера
+        sortNewsByDescendingOrder();
     }
-
-    /*private void assignSequentialNumbers() {
-        List<News> newsList = newsCollectionDc.getMutableItems(); // Получаем изменяемый список
-        int counter = 1; // Начинаем нумерацию с 1
-
-        for (News news : newsList) {
-            if (news.getNumber() == null || news.getNumber() == 0) {
-                news.setNumber(counter);
-                dataManager.commit(news);
-            }
-            counter++;
-        }
-
-        newsCollectionDl.load();
-    }*/
     private void sortNewsByDescendingOrder() {
         List<News> sortedList = newsCollectionDc.getItems().stream()
                 .sorted((n1, n2) -> {

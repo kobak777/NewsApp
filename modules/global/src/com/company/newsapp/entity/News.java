@@ -37,7 +37,7 @@ public class News extends StandardEntity {
     @NotNull
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "CATEGORY_ID")
-    private NewsCategory category; // Новое поле связи с категорией
+    private NewsCategory category;
 
     public NewsCategory getCategory() {
         return category;

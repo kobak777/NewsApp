@@ -21,10 +21,12 @@ public class NewsEdit extends StandardEditor<News> {
 
         if (news.getNumber() == null || news.getNumber() == 0) {
             Integer maxNumber = dataManager.loadValue(
-                            "select max(e.number) from newsapp_News e", Integer.class)
+                            "select max(e.number) from newsapp_News e where e.number is not null", Integer.class)
+                    .softDeletion(false)
                     .one();
 
             news.setNumber((maxNumber != null ? maxNumber : 0) + 1);
         }
     }
+
 }

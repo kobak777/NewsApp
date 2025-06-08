@@ -38,7 +38,6 @@
                 <dateField id="closeDateField" property="closeDate"/>
                 <maskedField id="supportPhoneField" property="author.phone" mask="###-##-##"/>
                 <textField id="supportMailField" property="author.email"/>
-
             </column>
         </form>
         <hbox id="editActions" spacing="true">

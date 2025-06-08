@@ -6,6 +6,7 @@ import com.company.newsapp.entity.NewsCategory;
 import com.haulmont.cuba.core.entity.annotation.PublishEntityChangedEvents;
 import com.haulmont.cuba.core.global.DataManager;
 import com.haulmont.cuba.core.global.UserSessionSource;
+import com.haulmont.cuba.core.global.View;
 import com.haulmont.cuba.gui.Notifications;
 import com.haulmont.cuba.gui.UiComponents;
 import com.haulmont.cuba.gui.components.Button;
@@ -73,15 +74,15 @@ public class Profile extends Screen {
         newsTable.addGeneratedColumn("information", entity -> {
             Label<String> label = componentsFactory.createComponent(Label.class);
             label.setValue(entity.getInformation());
-            label.setStyleName("news-content-label"); // Добавляем стиль
-            label.setWidth("300px"); // Ограничение ширины
+            label.setStyleName("news-content-label");
+            label.setWidth("300px");
             return label;
         });
         newsCategoriesTable.addGeneratedColumn("description", entity -> {
             Label<String> label = uiComponents.create(Label.TYPE_STRING);
             label.setValue(entity.getDescription());
-            label.setStyleName("news-table-information"); // Применение стиля
-            label.setWidth("300px"); // Ограничение ширины
+            label.setStyleName("news-table-information");
+            label.setWidth("300px");
             return label;
         });
     }
@@ -132,9 +133,6 @@ public class Profile extends Screen {
         userSubscriptionCount = count;
     }
 
-    /**
-     * Обновляет заголовок таблицы с учетом количества подписок пользователя.
-     */
     private void updateTableHeader() {
         String headerText = "Подписки (" + userSubscriptionCount + ")";
         newsCategoriesTable.setCaption(headerText);
@@ -187,13 +185,12 @@ public class Profile extends Screen {
 
             if (!subscribers.contains(currentUser)) {
                 subscribers.add(currentUser);
-                dataManager.commit(selectedCategory); // Сохраняем изменения в БД
+                dataManager.commit(selectedCategory);
                 notifications.create()
                         .withCaption("Вы успешно подписались на категорию")
                         .withType(Notifications.NotificationType.HUMANIZED)
                         .show();
 
-                // Обновляем список категорий и подписок
                 newsDl.load();
                 newsCategoriesDl.load();
                 updateSubscriptionStatus();
@@ -219,13 +216,12 @@ public class Profile extends Screen {
             List<Employee> subscribers = selectedCategory.getSubscribers();
             if (subscribers != null && subscribers.contains(currentUser)) {
                 subscribers.remove(currentUser);
-                dataManager.commit(selectedCategory); // Сохраняем изменения в БД
+                dataManager.commit(selectedCategory);
                 notifications.create()
                         .withCaption("Вы успешно отписались от категории")
                         .withType(Notifications.NotificationType.HUMANIZED)
                         .show();
 
-                // Обновляем список категорий и подписок
                 newsDl.load();
                 newsCategoriesDl.load();
                 updateSubscriptionStatus();
@@ -256,7 +252,7 @@ public class Profile extends Screen {
         newsCategories.sort((category1, category2) -> {
             boolean isSubscribed1 = "Подписан".equals(category1.getSubscriptionStatus());
             boolean isSubscribed2 = "Подписан".equals(category2.getSubscriptionStatus());
-            return Boolean.compare(isSubscribed2, isSubscribed1); // Подписанные выше
+            return Boolean.compare(isSubscribed2, isSubscribed1);
         });
 
         newsCategoriesDl.getContainer().setItems(newsCategories);
@@ -264,7 +260,6 @@ public class Profile extends Screen {
     private void updateSubscriptionButtons(NewsCategory selectedCategory) {
         if (selectedCategory != null) {
             boolean isSubscribed = "Подписан".equals(selectedCategory.getSubscriptionStatus());
-
             // Если подписан, показываем кнопку "Отписаться", скрываем "Подписаться"
             subscribe.setVisible(!isSubscribed);
             describe.setVisible(isSubscribed);
@@ -274,6 +269,42 @@ public class Profile extends Screen {
             describe.setVisible(false);
         }
     }
+    @Subscribe(id = "employeeDc", target = Target.DATA_CONTAINER)
+    public void onEmployeeDcItemPropertyChange(InstanceContainer.ItemPropertyChangeEvent<Employee> event) {
+        if ("lastname".equals(event.getProperty()) ||
+                "name".equals(event.getProperty()) ||
+                "patronymic".equals(event.getProperty())) {
+
+            Employee employee = employeeDc.getItem();
+
+            String lastname = employee.getLastname();
+            String name = employee.getName();
+            String patronymic = employee.getPatronymic();
+
+            if (lastname != null && name != null && patronymic != null) {
+                // Фамилия И.О.
+                String docname = String.format("%s %s.%s.",
+                        lastname,
+                        name.substring(0, 1).toUpperCase(),
+                        patronymic.substring(0, 1).toUpperCase());
+                employee.setDocname(docname);
+
+                // Фамилия Имя Отчество
+                String displayname = String.format("%s %s %s", lastname, name, patronymic);
+                employee.setDisplayname(displayname);
+
+                User user = dataManager.reload(employee.getUser(), View.LOCAL);
+                if (user != null) {
+                    user.setName(displayname);
+                    user.setFirstName(name);
+                    user.setLastName(lastname);
+                    user.setMiddleName(patronymic);
+                    dataManager.commit(user);
+                }
+            }
+        }
+    }
+
 
     @Subscribe("newsCategoriesTable")
     public void onNewsCategoriesTableSelection(Table.SelectionEvent<NewsCategory> event) {

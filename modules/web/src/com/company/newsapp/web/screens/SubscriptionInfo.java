@@ -42,9 +42,9 @@ public class SubscriptionInfo extends Screen {
 
 
     public void setNewsCategory(NewsCategory newsCategory) {
-        newsCategoryDc.setItem(newsCategory); // Устанавливаем текущую категорию
+        newsCategoryDc.setItem(newsCategory);
         subscribersDl.setParameter("newsCategoryId", UUID.fromString(newsCategory.getId().toString()));
-        subscribersDl.load(); // Загружаем подписчиков
+        subscribersDl.load();
     }
 
 }
