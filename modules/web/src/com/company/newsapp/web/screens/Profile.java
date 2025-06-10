@@ -107,7 +107,9 @@ public class Profile extends Screen {
 
         newsDl.setParameter("session$userId", userSessionSource.getUserSession().getUser().getId());
         newsDl.load();
-
+        List<News> sortedNews = new ArrayList<>(newsDl.getContainer().getItems());
+        sortedNews.sort((n1, n2) -> n2.getDate().compareTo(n1.getDate())); // от новых к старым
+        newsDl.getContainer().setItems(sortedNews);
         newsCategoriesDl.load();
 
         updateSubscriptionStatus();
